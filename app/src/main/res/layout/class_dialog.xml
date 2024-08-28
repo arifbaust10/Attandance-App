@@ -37,7 +37,7 @@
             android:id="@+id/subject_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Class Name"
+            android:hint="Subject Name"
             android:layout_margin="8dp" />
 
         <RelativeLayout
