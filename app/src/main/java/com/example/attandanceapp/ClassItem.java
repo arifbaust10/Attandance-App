@@ -1,8 +1,8 @@
 package com.example.attandanceapp;
 
 public class ClassItem {
-    String className;
-    String subjeetName;
+    private String className;
+    private String subjeetName;
 
     public ClassItem(String className, String subjeetName) {
         this.className = className;
