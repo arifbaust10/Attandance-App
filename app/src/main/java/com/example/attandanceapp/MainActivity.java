@@ -6,9 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
 
     ArrayList<ClassItem> classItems = new ArrayList<>();
+
+    Toolbar toolbar ;
 
 
 
@@ -46,6 +52,24 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(classAdapter);
         classAdapter.setOnItemClickListener(position -> gotoItemActivity(position));
 
+        setToolbar();
+
+
+    }
+
+    private void setToolbar() {
+
+        toolbar = findViewById(R.id.toolbar);
+        TextView title = toolbar.findViewById(R.id.title_toolbar);
+        TextView subtitle = toolbar.findViewById(R.id.subtitle_toolbar);
+        ImageButton back = toolbar.findViewById(R.id.back);
+        ImageButton save = toolbar.findViewById(R.id.save);
+
+
+        title.setText("Attendance App");
+        subtitle.setVisibility(View.GONE);
+        back.setVisibility(View.INVISIBLE);
+        save.setVisibility(View.INVISIBLE);
     }
 
     private void gotoItemActivity(int position) {
