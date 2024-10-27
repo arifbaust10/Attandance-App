@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    app:cardCornerRadius="18dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:padding="16dp"
@@ -45,23 +47,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
-            <Button
-                android:id="@+id/cancel_btn"
-                android:layout_marginLeft="10dp"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cancel"
-                />
+                >
 
-            <Button
-                android:id="@+id/add_btn"
-                android:layout_marginRight="10dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add"
-                />
 
+                <Button
+                    android:layout_weight="0.33"
+                    android:id="@+id/cancel_btn"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_button_colored"
+                    android:text="Cancel"
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.33" />
+
+                <Button
+                    android:id="@+id/add_btn"
+                    android:layout_weight="0.33"
+
+                    android:layout_marginRight="10dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_button_colored"
+                    android:text="Add"
+                    />
+
+
+            </LinearLayout>
         </RelativeLayout>
 
     </LinearLayout>
@@ -69,4 +87,4 @@
 
 
 
-</LinearLayout>
+</androidx.cardview.widget.CardView>
