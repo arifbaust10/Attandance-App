@@ -1,6 +1,8 @@
 package com.example.attandanceapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -29,7 +32,8 @@ public class StudentActivity extends AppCompatActivity {
     private StudentAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<StudentItem> studentItems = new ArrayList<>();
-
+    private DbHelper dbHelper;
+    private int cid;
 
 
     @Override
@@ -37,13 +41,21 @@ public class StudentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
 
+        dbHelper = new DbHelper(this);
+
+
 
         Intent intent = getIntent();
         className= intent.getStringExtra("className");
         subjectName = intent.getStringExtra("subjectName");
         position = intent.getIntExtra("position",-1);
+        cid = intent.getIntExtra("cid",-1);
+
+
 
         setToolbar();
+        loadData();
+
         recyclerView = findViewById(R.id.student_recycler);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -53,6 +65,19 @@ public class StudentActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(position->changeStatus(position));
 
+    }
+
+    private void loadData() {
+        Cursor cursor = dbHelper.getStudentTable(cid);
+        studentItems.clear();
+        while (cursor.moveToNext()){
+           @SuppressLint("Range") long sid = cursor.getLong(cursor.getColumnIndex(DbHelper.S_ID));
+           @SuppressLint("Range") int roll = cursor.getInt(cursor.getColumnIndex(DbHelper.STUDENT_ROLL_KEY));
+           @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex(DbHelper.STUDENT_NAME_KEY));
+           studentItems.add(new StudentItem(sid,roll,name));
+
+        }
+        cursor.close();
     }
 
     private void changeStatus(int position) {
@@ -100,8 +125,43 @@ public class StudentActivity extends AppCompatActivity {
         dialog.setListener((roll,name)->addStudent(roll,name));
     }
 
-    private void addStudent(String roll, String name) {
-        studentItems.add(new StudentItem(roll, name));
+    private void addStudent(String roll_string, String name) {
+        int roll = Integer.parseInt(roll_string);
+        long sid =  dbHelper.addStudent(cid,roll,name);
+        StudentItem studentItem = new StudentItem(sid,roll,name);
+        studentItems.add(studentItem);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case 0:
+                showUpdateStudentDialog(item.getGroupId());
+                return true;
+            case 1:
+                deleteStudent(item.getGroupId());
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    private void showUpdateStudentDialog(int position) {
+        MyDialog dialog = new MyDialog(studentItems.get(position).getRoll(),studentItems.get(position).getName());
+        dialog.show(getSupportFragmentManager(), MyDialog.STUDENT_UPDATE_DIALOG);
+        dialog.setListener((roll_string,name)->updateStudent(position,name));
+    }
+
+    private void updateStudent(int position, String name) {
+        dbHelper.updateStudent(studentItems.get(position).getSid(),name);
+        studentItems.get(position).setName(name);
+        adapter.notifyItemChanged(position);
+
+    }
+
+    private void deleteStudent(int position) {
+        dbHelper.deleteStudent(studentItems.get(position).getSid());
+        studentItems.remove(position);
+        adapter.notifyItemRemoved(position);
+
     }
 }

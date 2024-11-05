@@ -31,9 +31,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
     // Student table
     private static final String STUDENT_TABLE_NAME = "STUDENT_TABLE";
-    private static final String S_ID = "_SID";
-    private static final String STUDENT_NAME_KEY = "STUDENT_NAME";
-    private static final String STUDENT_ROLL_KEY = "ROLL";
+    public static final String S_ID = "_SID";
+    public static final String STUDENT_NAME_KEY = "STUDENT_NAME";
+    public static final String STUDENT_ROLL_KEY = "ROLL";
 
     private static final String CREATE_STUDENT_TABLE = "CREATE TABLE " + STUDENT_TABLE_NAME + " (" +
             S_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
@@ -51,9 +51,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
     // STATUS TABLE
     private static final String STATUS_TABLE_NAME = "STATUS_TABLE";
-    private static final String STATUS_ID = "_STATUS_ID";
-    private static final String DATE_KEY = "STATUS_DATE";
-    private static final String STATUS_KEY = "STATUS";
+    public static final String STATUS_ID = "_STATUS_ID";
+    public static final String DATE_KEY = "STATUS_DATE";
+    public static final String STATUS_KEY = "STATUS";
 
 
     private static final String CREATE_STATUS_TABLE = "CREATE TABLE " + STATUS_TABLE_NAME + " ("
@@ -122,5 +122,54 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(SUBJECT_NAME_KEY, subjectName);
         return database.update(CLASS_TABLE_NAME, values, C_ID + "=?", new String[]{String.valueOf(cid)});
     }
+
+
+    long addStudent(long cid, int roll, String name) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(C_ID, cid);
+        values.put(STUDENT_ROLL_KEY, roll);
+        values.put(STUDENT_NAME_KEY, name);
+        return database.insert(STUDENT_TABLE_NAME, null, values);
+    }
+
+    // Method to get student data from the database
+    Cursor getStudentTable(long cid) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        return database.query(
+                STUDENT_TABLE_NAME,    // Table name
+                null,                      // Columns (null to select all columns)
+                 C_ID+"=?",                // Selection (where clause)
+                new String[]{String.valueOf(cid)}, // Selection arguments
+                null,                      // Group by
+                null,                      // Having
+                STUDENT_ROLL_KEY                 // Order by (if required)
+        );
+    }
+
+    // Method to delete a student record from the database
+    int deleteStudent(long sid) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        return database.delete(
+                STUDENT_TABLE_NAME,        // Table name
+                S_ID +"=?",                  // Where clause (with placeholder)
+                new String[]{String.valueOf(sid)} // Where arguments
+        );
+    }
+
+    // Method to update a student record in the database
+    long updateStudent(long sid, String name) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(STUDENT_NAME_KEY, name);  // Column name and value
+        return database.update(
+                STUDENT_TABLE_NAME,        // Table name
+                values,                      // Values to update
+                S_ID +"=?",                  // Where clause (with placeholder)
+                new String[]{String.valueOf(sid)} // Where arguments
+        );
+    }
+
+
 
 }
