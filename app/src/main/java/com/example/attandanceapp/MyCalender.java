@@ -50,7 +50,7 @@ public class MyCalender extends DialogFragment {
 
     String getDate() {
 
-        return DateFormat.format("dd.MM.yy", calendar).toString();
+        return DateFormat.format("dd.MM.yyyy", calendar).toString();
     }
 
 

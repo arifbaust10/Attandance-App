@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -34,7 +35,7 @@ public class StudentActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<StudentItem> studentItems = new ArrayList<>();
     private DbHelper dbHelper;
-    private int cid;
+    private long cid;
     private MyCalender calender ;
     private TextView subtitle;
 
@@ -51,12 +52,13 @@ public class StudentActivity extends AppCompatActivity {
         className= intent.getStringExtra("className");
         subjectName = intent.getStringExtra("subjectName");
         position = intent.getIntExtra("position",-1);
-        cid = intent.getIntExtra("cid",-1);
+        cid = intent.getLongExtra("cid",-1);
 
 
 
         setToolbar();
         loadData();
+
 
         recyclerView = findViewById(R.id.student_recycler);
         recyclerView.setHasFixedSize(true);
@@ -67,11 +69,15 @@ public class StudentActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(position->changeStatus(position));
 
+        loadStatusData();
+
     }
 
     private void loadData() {
         Cursor cursor = dbHelper.getStudentTable(cid);
+        Log.i("1234567890","loadData: "+cid);
         studentItems.clear();
+
         while (cursor.moveToNext()){
            @SuppressLint("Range") long sid = cursor.getLong(cursor.getColumnIndex(DbHelper.S_ID));
            @SuppressLint("Range") int roll = cursor.getInt(cursor.getColumnIndex(DbHelper.STUDENT_ROLL_KEY));
@@ -100,6 +106,8 @@ public class StudentActivity extends AppCompatActivity {
         ImageButton back = toolbar.findViewById(R.id.back);
         ImageButton save = toolbar.findViewById(R.id.save);
 
+        save.setOnClickListener(v->saveStatus());
+
 
         title.setText(className);
         subtitle.setText(subjectName+" | "+ calender.getDate());
@@ -110,6 +118,32 @@ public class StudentActivity extends AppCompatActivity {
         toolbar.inflateMenu(R.menu.student_menu);
         toolbar.setOnMenuItemClickListener(menuItem->onMenuItemClick(menuItem));
 
+
+    }
+
+    private void saveStatus() {
+        for (StudentItem studentItem : studentItems) {
+            String status = studentItem.getStatus();
+
+
+            if (!status.equals("P")) status = "A";
+
+            long value = dbHelper.addStatus(studentItem.getSid(), calender.getDate(), status);
+            if (value == -1) {
+                dbHelper.updateStatus(studentItem.getSid(), calender.getDate(), status);
+            }
+        }
+    }
+
+
+
+    private void loadStatusData(){
+        for(StudentItem studentItem : studentItems){
+            String status  = dbHelper.getStatus(studentItem.getSid(),calender.getDate());
+            if(status!=null) studentItem.setStatus(status);
+            else  studentItem.setStatus("");
+        }
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -136,6 +170,7 @@ public class StudentActivity extends AppCompatActivity {
 
         calender.setDate(year,month,day);
          subtitle.setText(subjectName+" | "+calender.getDate());
+         loadStatusData();
 
     }
 

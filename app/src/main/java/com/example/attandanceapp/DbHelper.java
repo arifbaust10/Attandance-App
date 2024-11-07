@@ -1,5 +1,6 @@
 package com.example.attandanceapp;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -56,14 +57,14 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String STATUS_KEY = "STATUS";
 
 
-    private static final String CREATE_STATUS_TABLE = "CREATE TABLE " + STATUS_TABLE_NAME + " ("
+    private static final String CREATE_STATUS_TABLE =
+            "CREATE TABLE " + STATUS_TABLE_NAME + "("
             + STATUS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
             + S_ID + " INTEGER NOT NULL, "
             + DATE_KEY + " DATE NOT NULL, "
             + STATUS_KEY + " TEXT NOT NULL, "
             + "UNIQUE (" + S_ID + ", " + DATE_KEY + "), "
-            + "FOREIGN KEY (" + S_ID + ") REFERENCES STUDENT_TABLE_NAME (" + S_ID + ")"
-            + ");";
+            + "FOREIGN KEY (" + S_ID + ") REFERENCES "+ STUDENT_TABLE_NAME + "( " + S_ID + ")" + ");";
 
     private static final String DROP_STATUS_TABLE = "DROP TABLE IF EXISTS " + STATUS_TABLE_NAME;
     private static final String SELECT_STATUS_TABLE = "SELECT * FROM " + STATUS_TABLE_NAME + ";";
@@ -169,6 +170,47 @@ public class DbHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(sid)} // Where arguments
         );
     }
+
+
+    long addStatus(long sid, String date, String status) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(S_ID, sid);
+        values.put(DATE_KEY, date);
+        values.put(STATUS_KEY, status);
+
+        return database.insert(STATUS_TABLE_NAME, null, values);
+    }
+
+
+    long updateStatus(long sid, String date, String status) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(STATUS_KEY, status);
+        String whereClause = DATE_KEY + "=? AND " + S_ID + "=?";
+        String[] whereArgs = { date, String.valueOf(sid) };
+
+        return database.update(STATUS_TABLE_NAME, values, whereClause, whereArgs);
+    }
+
+
+
+    String getStatus(long sid, String date) {
+        String status = null;
+        SQLiteDatabase database = this.getReadableDatabase();
+        String whereClause = DATE_KEY + "='" + date + "' AND " + S_ID + "=" + sid;
+
+        Cursor cursor = database.query(STATUS_TABLE_NAME, null, whereClause, null, null, null, null);
+        if (cursor.moveToFirst()) {
+
+            int statusIndex = cursor.getColumnIndexOrThrow(STATUS_KEY);
+            status = cursor.getString(statusIndex);
+        }
+
+        return status;
+    }
+
+
 
 
 
