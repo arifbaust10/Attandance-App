@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+
 public class StudentActivity extends AppCompatActivity {
 
     Toolbar toolbar;
@@ -34,6 +35,9 @@ public class StudentActivity extends AppCompatActivity {
     private ArrayList<StudentItem> studentItems = new ArrayList<>();
     private DbHelper dbHelper;
     private int cid;
+    private MyCalender calender ;
+    private TextView subtitle;
+
 
 
     @Override
@@ -41,10 +45,8 @@ public class StudentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
 
+        calender = new MyCalender();
         dbHelper = new DbHelper(this);
-
-
-
         Intent intent = getIntent();
         className= intent.getStringExtra("className");
         subjectName = intent.getStringExtra("subjectName");
@@ -93,13 +95,14 @@ public class StudentActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.title_toolbar);
-        TextView subtitle = toolbar.findViewById(R.id.subtitle_toolbar);
+        subtitle = toolbar.findViewById(R.id.subtitle_toolbar);
+
         ImageButton back = toolbar.findViewById(R.id.back);
         ImageButton save = toolbar.findViewById(R.id.save);
 
 
         title.setText(className);
-        subtitle.setText(subjectName);
+        subtitle.setText(subjectName+" | "+ calender.getDate());
 
         back.setOnClickListener(v -> onBackPressed());
 
@@ -115,7 +118,25 @@ public class StudentActivity extends AppCompatActivity {
         if(menuItem.getItemId() == R.id.add_student){
             showAddStudentDialog();
         }
+        else if(menuItem.getItemId() == R.id.show_Calendar){
+            showCalender();
+        }
         return true;
+    }
+
+    private void showCalender() {
+
+        calender.show(getSupportFragmentManager(), "");
+        calender.setONCalenderOkClickListener(this::onCalenderOkClicked);
+
+
+    }
+
+    private void onCalenderOkClicked(int year, int month, int day) {
+
+        calender.setDate(year,month,day);
+         subtitle.setText(subjectName+" | "+calender.getDate());
+
     }
 
     private void showAddStudentDialog() {

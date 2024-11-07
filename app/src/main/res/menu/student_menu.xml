@@ -6,4 +6,9 @@
         android:title="ADD STUDENT"
         />
 
+    <item
+        android:id="@+id/show_Calendar"
+        android:title="Change Date"
+        />
+
 </menu>
