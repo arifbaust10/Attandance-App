@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.media3.common.util.Log;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -80,10 +81,12 @@ public class MainActivity extends AppCompatActivity {
 
                 classItems.add(new ClassItem(id, className, subjectName));
             }
-        } finally {
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();  // Ensure the cursor is closed after use to prevent memory leaks
-            }
+        } catch (Exception e) {
+            // Handle the exception, e.g., log it or display an error message
+            Log.e("MainActivity", "Error loading data: " + e.getMessage());
+        } finally {if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
         }
     }
 

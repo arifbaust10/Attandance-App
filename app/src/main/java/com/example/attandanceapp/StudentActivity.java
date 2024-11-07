@@ -128,7 +128,7 @@ public class StudentActivity extends AppCompatActivity {
 
             if (!status.equals("P")) status = "A";
 
-            long value = dbHelper.addStatus(studentItem.getSid(), calender.getDate(), status);
+            long value = dbHelper.addStatus(studentItem.getSid(),cid, calender.getDate(), status);
             if (value == -1) {
                 dbHelper.updateStatus(studentItem.getSid(), calender.getDate(), status);
             }
@@ -155,7 +155,17 @@ public class StudentActivity extends AppCompatActivity {
         else if(menuItem.getItemId() == R.id.show_Calendar){
             showCalender();
         }
+        else if(menuItem.getItemId() == R.id.show_attandance_sheet){
+            openSheetList();
+        }
         return true;
+    }
+
+    private void openSheetList() {
+
+        Intent intent = new Intent(this, SheetListActivity.class);
+        intent.putExtra("cid",cid);
+        startActivity(intent);
     }
 
     private void showCalender() {
@@ -220,4 +230,6 @@ public class StudentActivity extends AppCompatActivity {
         adapter.notifyItemRemoved(position);
 
     }
+
+
 }

@@ -45,6 +45,9 @@ public class DbHelper extends SQLiteOpenHelper {
             ");";
 
 
+
+
+
     private static final String DROP_STUDENT_TABLE = "DROP TABLE IF EXISTS " + STUDENT_TABLE_NAME;
 
     private static final String SELECT_STUDENT_TABLE = "SELECT * FROM " + STUDENT_TABLE_NAME;
@@ -61,10 +64,13 @@ public class DbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + STATUS_TABLE_NAME + "("
             + STATUS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
             + S_ID + " INTEGER NOT NULL, "
+            + C_ID + " INTEGER NOT NULL, "
             + DATE_KEY + " DATE NOT NULL, "
             + STATUS_KEY + " TEXT NOT NULL, "
-            + "UNIQUE (" + S_ID + ", " + DATE_KEY + "), "
-            + "FOREIGN KEY (" + S_ID + ") REFERENCES "+ STUDENT_TABLE_NAME + "( " + S_ID + ")" + ");";
+            + " UNIQUE (" + S_ID + ", " + DATE_KEY + "), "
+            + " FOREIGN KEY (" + S_ID + ") REFERENCES "+ STUDENT_TABLE_NAME + "( " + S_ID + "),"
+            + " FOREIGN KEY (" + C_ID + ") REFERENCES "+ CLASS_TABLE_NAME + "( " + C_ID + ")" +
+            ");";
 
     private static final String DROP_STATUS_TABLE = "DROP TABLE IF EXISTS " + STATUS_TABLE_NAME;
     private static final String SELECT_STATUS_TABLE = "SELECT * FROM " + STATUS_TABLE_NAME + ";";
@@ -172,10 +178,11 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    long addStatus(long sid, String date, String status) {
+    long addStatus(long sid, long cid, String date, String status) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(S_ID, sid);
+        values.put(C_ID, cid);
         values.put(DATE_KEY, date);
         values.put(STATUS_KEY, status);
 
@@ -210,8 +217,11 @@ public class DbHelper extends SQLiteOpenHelper {
         return status;
     }
 
+    Cursor getDistinctMonths(long cid) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        return database.query(STATUS_TABLE_NAME, new String[]{DATE_KEY}, C_ID +"="+ cid, null, "substr(" + DATE_KEY + ",4,7)", null, null);
 
-
+    }
 
 
 }
