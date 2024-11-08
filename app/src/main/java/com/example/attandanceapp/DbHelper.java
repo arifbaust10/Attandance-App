@@ -67,7 +67,7 @@ public class DbHelper extends SQLiteOpenHelper {
             + C_ID + " INTEGER NOT NULL, "
             + DATE_KEY + " DATE NOT NULL, "
             + STATUS_KEY + " TEXT NOT NULL, "
-            + " UNIQUE (" + S_ID + ", " + DATE_KEY + "), "
+            + " UNIQUE (" + S_ID + ", " + DATE_KEY + "),"
             + " FOREIGN KEY (" + S_ID + ") REFERENCES "+ STUDENT_TABLE_NAME + "( " + S_ID + "),"
             + " FOREIGN KEY (" + C_ID + ") REFERENCES "+ CLASS_TABLE_NAME + "( " + C_ID + ")" +
             ");";
@@ -189,7 +189,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return database.insert(STATUS_TABLE_NAME, null, values);
     }
 
-
+ 
     long updateStatus(long sid, String date, String status) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
