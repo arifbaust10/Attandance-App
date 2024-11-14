@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
     RecyclerView recyclerView;
+
+    Button signout;
 
     ClassAdapter classAdapter;
     RecyclerView.LayoutManager layoutManager;
@@ -39,12 +42,27 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar ;
     DbHelper dbHelper;
 
+    FirebaseAuth auth;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        auth = FirebaseAuth.getInstance();
+        signout = findViewById(R.id.signout);
+
+        signout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // auth.signOut();
+                Intent intent = new Intent(MainActivity.this, login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         dbHelper = new DbHelper(this);
 

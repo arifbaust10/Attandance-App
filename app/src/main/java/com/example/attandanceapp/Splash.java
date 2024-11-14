@@ -17,11 +17,11 @@ public class Splash extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
 
-        // For Hide Action Bar
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
+//        // For Hide Action Bar
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null) {
+//            actionBar.hide();
+//        }
 
         // For Splash Screen
         Handler handler = new Handler(Looper.getMainLooper());
@@ -29,7 +29,7 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
                 // Code here
-                Intent myIntent = new Intent(Splash.this, MainActivity.class);
+                Intent myIntent = new Intent(Splash.this, login.class);
                 startActivity(myIntent);
                 finish();
             }
